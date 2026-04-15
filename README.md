@@ -54,7 +54,27 @@
 
 * **Bunテストランナー (`bun test`):** 外部ライブラリに依存せず、ゼロ設定でセキュリティ層・バリデーション層の品質を単体テストできるため採用しました。
 
-### アーキテクチャ図
+### アーキテクチャ
+
+#### システム構成図
+
+```mermaid
+flowchart LR
+    User(("ユーザー"))
+    CLI["CLI層"]
+    Agent["Agent層"]
+    Security{{"Security層<br>(強制マスキング)"}}
+    Tools["Tool層<br>(Zodバリデーション)"]
+    LLM[/"Gemini API"/]
+    API[/"各種 Status API"/]
+
+    User --> CLI --> Agent
+    Agent <-->|Function Calling| LLM
+    Agent --> Tools --> API
+    Tools -->|生データ| Security -->|MASKED済データ| Agent
+```
+
+#### シーケンス図
 
 ```mermaid
 sequenceDiagram
